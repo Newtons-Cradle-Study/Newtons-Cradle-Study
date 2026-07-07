@@ -1,0 +1,9 @@
+export const GRAVITY = 9.81;
+export const DEFAULT_MASS = 1;
+export const DEFAULT_DENSITY = 7850;
+export const DEFAULT_RADIUS = 0.1;
+export const DEFAULT_LENGTH = 2;
+export const DEFAULT_DAMPING = 0.02;
+export const DEFAULT_RESTITUTION = 0.98;
+export const DEFAULT_AIR_DENSITY = 1.225;
+export const DEFAULT_DRAG_COEFF = 0.47;

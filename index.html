@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>بندول نيوتن · محاكاة فيزيائية ثلاثية الأبعاد</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <div>
+        <h1>بندول نيوتن</h1>
+        <p>محاكاة فيزيائية ثلاثية الأبعاد</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button id="hideLeftPanelBtn" class="chip-btn" title="إخفاء/إظهار لوحة التحليل">
+        <span class="chip-ico">◀</span> إخفاء التحليل
+      </button>
+    </div>
+  </header>
+
+  <!-- لوحة التحكم الرئيسية (يمين) -->
+  <aside id="controlPanel" class="panel panel-right">
+    <section class="card">
+      <div class="card-head">
+        <span class="badge badge-gold">⚡</span>
+        <h2>الطاقة الكلية</h2>
+      </div>
+      <div class="energy-value" id="energyDisplay">0.0000 J</div>
+      <div class="meter">
+        <div class="meter-fill" id="energyMeter"></div>
+      </div>
+      <div class="energy-sub" id="energyAvg">المتوسط: 0.0000 J</div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <span class="badge badge-purple">▶</span>
+        <h2>التشغيل</h2>
+      </div>
+      <div class="btn-grid">
+        <button id="pauseButton" class="btn btn-primary">إيقاف</button>
+        <button id="resetButton" class="btn btn-ghost">إعادة</button>
+        <button id="launchButton" class="btn btn-accent">إطلاق</button>
+      </div>
+      <div class="launch-row">
+        <label>الكرات المرفوعة</label>
+        <input id="raisedBalls" type="number" min="1" max="9" value="1" />
+      </div>
+      <div class="launch-row">
+        <label>الزاوية (°)</label>
+        <input id="initialAngle" type="number" value="35" min="0" max="75" />
+      </div>
+      <div class="quick-keys">
+        <button class="chip-btn" data-launch="1-both" title="اسحب كرة من كل جهة (A)">A · كرة/جهة</button>
+        <button class="chip-btn" data-launch="2-both" title="اسحب كرتين من كل جهة (S)">S · كرتان/جهة</button>
+      </div>
+    </section>
+
+    <section class="card collapsible" id="paramsCard">
+      <div class="card-head clickable">
+        <span class="badge badge-blue">⚙</span>
+        <h2>المعاملات</h2>
+        <span class="chev">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="param-row">
+          <label>عدد الكرات</label>
+          <input id="param_count" type="number" min="1" max="9" value="5" />
+        </div>
+        <div class="param-row">
+          <label>طول الخيط</label>
+          <input id="param_length" type="number" step="0.1" value="3.6" />
+        </div>
+        <div class="param-row">
+          <label>نصف القطر</label>
+          <input id="param_radius" type="number" step="0.01" value="0.32" />
+        </div>
+        <div class="param-row">
+          <label>الكتلة</label>
+          <input id="param_mass" type="number" step="0.1" value="1" />
+        </div>
+        <div class="param-row">
+          <label>الجاذبية</label>
+          <input id="param_gravity" type="number" step="0.1" value="9.81" />
+        </div>
+        <div class="param-row">
+          <label>التخميد</label>
+          <input id="param_damping" type="number" step="0.01" value="0.02" />
+        </div>
+        <div class="param-row">
+          <label>الارتداد COR</label>
+          <input id="param_restitution" type="number" step="0.01" value="0.98" />
+        </div>
+        <div class="param-row">
+          <label>سرعة الزمن</label>
+          <input id="param_timeScale" type="number" step="0.1" value="1.0" />
+        </div>
+        <div class="btn-grid">
+          <button id="enlargeBallBtn" class="btn btn-ghost" title="تكبير كرة واحدة فقط">⬆ تكبير كرة</button>
+          <button id="exportCsv" class="btn btn-ghost">CSV</button>
+          <button id="exportJson" class="btn btn-ghost">JSON</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card collapsible" id="labCard">
+      <div class="card-head clickable">
+        <span class="badge badge-green">🧪</span>
+        <h2>المختبر الفيزيائي</h2>
+        <span class="chev">▾</span>
+      </div>
+      <div class="card-body">
+        <label class="switch"><input type="checkbox" id="lab_damping" checked /><span>التخميد (احتكاك المحور)</span></label>
+        <label class="switch"><input type="checkbox" id="lab_airDrag" checked /><span>مقاومة الهواء</span></label>
+        <label class="switch"><input type="checkbox" id="lab_collisions" checked /><span>التصادمات</span></label>
+        <label class="switch"><input type="checkbox" id="lab_gravity" checked /><span>الجاذبية</span></label>
+        <label class="switch"><input type="checkbox" id="lab_showVectors" /><span>متجهات السرعة</span></label>
+        <label class="switch"><input type="checkbox" id="lab_energyAnalysis" checked /><span>تحليل الطاقة</span></label>
+        <label class="switch"><input type="checkbox" id="lab_momentumAnalysis" checked /><span>تحليل الزخم</span></label>
+        <label class="switch"><input type="checkbox" id="lab_ballDetails" checked /><span>تفاصيل الكرات</span></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <span class="badge badge-purple">🎮</span>
+        <h2>المنظور ثلاثي الأبعاد</h2>
+      </div>
+      <div class="dpad">
+        <button class="dpad-btn up" data-cam="up">▲</button>
+        <button class="dpad-btn left" data-cam="left">◀</button>
+        <button class="dpad-btn center" data-cam="reset">●</button>
+        <button class="dpad-btn right" data-cam="right">▶</button>
+        <button class="dpad-btn down" data-cam="down">▼</button>
+      </div>
+      <div class="btn-grid">
+        <button class="btn btn-ghost" data-cam="zoomIn">＋ تقريب</button>
+        <button class="btn btn-ghost" data-cam="zoomOut">－ إبعاد</button>
+      </div>
+    </section>
+  </aside>
+
+  <aside id="debugPanel" class="panel panel-left"></aside>
+
+  <aside id="graphPanel" class="panel panel-graph">
+    <div class="graph-head">
+      <h2>الرسم البياني</h2>
+      <div class="legend">
+        <span class="leg leg-energy"><i></i> الطاقة</span>
+        <span class="leg leg-velocity"><i></i> السرعة</span>
+        <span class="leg leg-momentum"><i></i> الزخم</span>
+        <span class="leg leg-angle"><i></i> الزاوية</span>
+      </div>
+    </div>
+    <canvas id="graphCanvas"></canvas>
+    <div class="graph-foot">يُعرض آخر 10 ثوانٍ من البيانات لكل كمّية فيزيائية.</div>
+  </aside>
+
+  <div class="hints">
+    <kbd>A</kbd> كرة من كل جهة · <kbd>S</kbd> كرتان من كل جهة · <kbd>مسافة</kbd> إيقاف · <kbd>R</kbd> إعادة
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
