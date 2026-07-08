@@ -75,7 +75,7 @@ export class CollisionSolver {
     const vaN = va * (tax * nx + tay * ny);
     const vbN = vb * (tbx * nx + tby * ny);
 
-    const approach = vaN - vbN;
+    const approach = vaN - vbN;//حساب سرعة الاقتراب بين كرتين
     if (approach <= 0) return;
 
     CollisionSolver.collisionCount++;
@@ -91,8 +91,8 @@ export class CollisionSolver {
     const newVaN = (vaN * (m1 - e * m2) + (1 + e) * m2 * vbN) / (m1 + m2);
     const newVbN = (vbN * (m2 - e * m1) + (1 + e) * m1 * vaN) / (m1 + m2);
 
-    const deltaVaN = newVaN - vaN;
-    const deltaVbN = newVbN - vbN;
+    const deltaVaN = newVaN - vaN;//Δv = v_after − v_before
+    const deltaVbN = newVbN - vbN;//Δv = v_after − v_before
 
     a.angularVelocity += (deltaVaN * (tax * nx + tay * ny)) / a.length;
     b.angularVelocity += (deltaVbN * (tbx * nx + tby * ny)) / b.length;

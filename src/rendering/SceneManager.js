@@ -1,9 +1,11 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
 import { Renderer } from "./Renderer.js";
 import { CameraManager } from "./CameraManager.js";
 import { Lights } from "./Lights.js";
 import { createFloorMaterial } from "./materials.js";
+import skyboxUrl from "../public/monochrome_studio_02_1k.exr?url";
 
 export class SceneManager {
   constructor() {
@@ -22,6 +24,8 @@ export class SceneManager {
     this.renderer = new Renderer();
 
     this._setupEnvironment();
+
+    this._loadSkybox();
 
     this.cameraManager = new CameraManager(this.renderer.domElement);
 
@@ -69,6 +73,31 @@ export class SceneManager {
 
     pmrem.dispose();
     this._pmrem = pmrem;
+  }
+
+  _loadSkybox() {
+    new EXRLoader().load(
+      skyboxUrl,
+      (texture) => {
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        const pmrem = new THREE.PMREMGenerator(this.renderer.instance);
+        const envMap = pmrem.fromEquirectangular(texture).texture;
+        this.scene.environment = envMap;
+        this.scene.background = envMap;
+        // Remove the opaque gradient sphere so the skybox shows behind it
+        if (this._bgMesh) {
+          this.scene.remove(this._bgMesh);
+          this._bgMesh.geometry.dispose();
+          this._bgMesh.material.map.dispose();
+          this._bgMesh.material.dispose();
+          this._bgMesh = null;
+        }
+        texture.dispose();
+        pmrem.dispose();
+      },
+      undefined,
+      (err) => console.error("[Skybox] load failed:", err),
+    );
   }
 
   _createFloor() {
