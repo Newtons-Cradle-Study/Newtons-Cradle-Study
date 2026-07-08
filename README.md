@@ -62,15 +62,3 @@ To clone and run this project locally, follow these steps:
 
 📊Automated Data Exporting
 The platform includes built-in telemetry capturing tools (DataExporter.js) allowing users to dump frame-by-frame mechanical metrics, phase angles, and conservation records straight to CSV/JSON files for external scientific modeling.
-
----
-
-### 📥 طريقة الرفع بعد ما تلصقه وتحفظه:
-
-افتح الـ Terminal عندك، وانسخ هدول الأسطر لتحديث الملف على جيتهوب فوراً:
-
-```cmd
-git add .
-git commit -m "docs: restore and finalize comprehensive README with correct screenshot paths"
-git push origin main
-```
